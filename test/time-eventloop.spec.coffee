@@ -1,14 +1,11 @@
-mod   = require("#{process.cwd()}/src/time-eventloop").start()
+mod   = require("#{process.cwd()}/src/time-eventloop")
+util  = require('util')
 sinon = require 'sinon'
 clock = null
 
-i = 0
-while i < 200
-  i++
-
 describe 'time-eventloop', ->
-  #beforeEach -> clock = sinon.useFakeTimers()
-  #afterEach -> clock.restore()
+  beforeEach -> clock = sinon.useFakeTimers 'setInterval','clearInterval'
+  afterEach -> clock.restore()
 
   it 'should exist', -> mod.should.be.ok
 
@@ -28,3 +25,9 @@ describe 'time-eventloop', ->
       mod.stop()
       global.clearInterval.called.should.be.ok
 
+  #describe 'time tracking', ->
+    #it 'should not pipe if there is no delay', sinon.test ->
+      #@stub util, 'log'
+      #mod.start interval: 400
+      #clock.tick 800
+      #util.log.called.should.not.be.ok

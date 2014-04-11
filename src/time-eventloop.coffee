@@ -1,8 +1,8 @@
 chalk = require 'chalk'
+util  = require 'util'
 
 intervalId = null
 startTime  = null
-tickTime   = 4
 
 assign = (defaults, opts = {}) ->
   res = {}
@@ -11,19 +11,19 @@ assign = (defaults, opts = {}) ->
   res
 
 notifyDelay = (time) ->
-  msg = chalk.yellow 'event loop delayed', time
-  console.log msg
+  util.log chalk.yellow 'event loop delayed by:', time
 
-tick = (opts) ->
+tick = ({ factor, interval }) ->
   delta = Date.now() - startTime
-  notifyDelay delta if delta * opts.factor > tickTime
+  console.log 'here', delta
+  notifyDelay delta if delta * factor > interval
   startTime = Date.now()
 
-exports.start = (opts) ->
-  opts       = assign @defaults, opts
+exports.start = (rawOpts) ->
+  opts       = assign @defaults, rawOpts
   bound      = tick.bind null, opts
   startTime  = Date.now()
-  intervalId = setInterval bound, tickTime
+  intervalId = setInterval bound, opts.interval
   @
 
 exports.stop = ->
@@ -31,4 +31,5 @@ exports.stop = ->
   @
 
 exports.defaults =
-  factor : 0.4
+  factor   : 0.4
+  interval : 4
