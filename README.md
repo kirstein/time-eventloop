@@ -16,17 +16,17 @@ Will notify you when your event loop has become slower than a certain threshold.
 
 watches for file changes and reruns tests each time
 ```bash
-    grunt watch 
+grunt watch 
 ```
 
 runs spec tests   
 ```bash
-    grunt test  
+grunt test  
 ```
 
 produces coverage report
 ```bash
-    grunt cov   
+grunt cov   
 ```
 
 ## License
