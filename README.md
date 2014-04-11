@@ -4,7 +4,8 @@
 
 ### What?
 
-A small utility that 
+A small utility that helps you analyze the state of your amazing event loop.
+Will notify you when your event loop has become slower than a certain threshold.
 
 ### Getting started
 
