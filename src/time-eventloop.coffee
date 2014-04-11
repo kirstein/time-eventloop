@@ -1,35 +1,38 @@
 chalk = require 'chalk'
 util  = require 'util'
 
-intervalId = null
-startTime  = null
+timeoutId = null
+startTime = null
 
+# Create an obj where the values are extended from `opts` to `defaults`.
 assign = (defaults, opts = {}) ->
   res = {}
   for key, val of defaults
     res[key] = opts[key] or val
   res
 
-notifyDelay = (time) ->
-  util.log chalk.yellow 'event loop delayed by:', time
+notify = (time) ->
+  util.log chalk.yellow "event loop delayed by: #{time} ms"
 
-tick = ({ factor, interval }) ->
-  delta = Date.now() - startTime
-  console.log 'here', delta
-  notifyDelay delta if delta * factor > interval
+startInterval = ({ interval, factor }) ->
   startTime = Date.now()
+  timeoutId = setTimeout (->
+    delta = Date.now() - startTime
+    notify delta if delta * factor > interval
+    startInterval { interval, factor }
+  ), interval
 
-exports.start = (rawOpts) ->
-  opts       = assign @defaults, rawOpts
-  bound      = tick.bind null, opts
-  startTime  = Date.now()
-  intervalId = setInterval bound, opts.interval
+exports.start = (rawOpts) =>
+  @stop()
+  startInterval assign @defaults, rawOpts
   @
 
-exports.stop = ->
-  clearInterval intervalId
+exports.stop = =>
+  clearInterval timeoutId
   @
 
 exports.defaults =
-  factor   : 0.4
+  # Constant used to determinate better range between the real timeout delta and interval
+  factor   : .4
+  # Interval of the setTimeout. Will be used to determine the diff between real running times
   interval : 4

@@ -2,6 +2,10 @@
 
 > notify when eventloop ticks are getting delayed
 
+### What?
+
+A small utility that 
+
 ### Getting started
 
 `npm install time-eventloop`
@@ -9,9 +13,20 @@
 
 ### Testing 
 
-    grunt watch // watches for file changes and reruns tests each time
-    grunt test  // runs spec tests   
-    grunt cov   // produces coverage report
+watches for file changes and reruns tests each time
+```bash
+    grunt watch 
+```
+
+runs spec tests   
+```bash
+    grunt test  
+```
+
+produces coverage report
+```bash
+    grunt cov   
+```
 
 ## License
 

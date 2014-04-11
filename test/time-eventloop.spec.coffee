@@ -1,33 +1,82 @@
-mod   = require("#{process.cwd()}/src/time-eventloop")
-util  = require('util')
+mod   = require "#{process.cwd()}/src/time-eventloop"
+util  = require 'util'
 sinon = require 'sinon'
-clock = null
 
 describe 'time-eventloop', ->
-  beforeEach -> clock = sinon.useFakeTimers 'setInterval','clearInterval'
-  afterEach -> clock.restore()
-
   it 'should exist', -> mod.should.be.ok
 
-  describe '#start', ->
-    it 'should exist', -> mod.start.should.be.ok
-    it 'should be chainable', -> mod.start().should.be.eql mod
-    it 'should start interval', sinon.test ->
-      @stub global, 'setInterval'
+  describe 'api', ->
+
+    # Silence the log for each test
+    # Hacky way
+    log = null
+    beforeEach ->
+      log = util.log
+      util.log = ->
+    afterEach -> util.log = log
+
+    describe '#start', ->
+
+      it 'should exist', -> mod.start.should.be.ok
+      it 'should be chainable', sinon.test ->
+        @stub global, 'setTimeout'
+        mod.start().should.be.eql mod
+
+      it 'should start interval', sinon.test ->
+        @stub global, 'setTimeout'
+        mod.start()
+        global.setTimeout.called.should.be.ok
+
+      it 'should stop the previous interval', sinon.test ->
+        @spy mod, 'stop'
+        mod.start()
+        mod.stop.called.should.be.ok
+
+    describe '#stop', ->
+      it 'should exist', -> mod.stop.should.be.ok
+      it 'should be chainable', -> mod.stop().should.be.eql mod
+      it 'should stop the interval', sinon.test ->
+        @stub global, 'clearInterval'
+        mod.stop()
+        global.clearInterval.called.should.be.ok
+
+  describe 'time tracking', ->
+    it 'should pipe to log if there is delay', sinon.test ->
+      callCount = 0
+      @stub util, 'log'
+      @stub global, 'setTimeout', (cb) -> cb() if ++callCount < 2
+      dateStub = @stub global.Date, 'now'
+      dateStub.onFirstCall().returns 2
+      dateStub.onSecondCall().returns 200
       mod.start()
-      global.setInterval.called.should.be.ok
+      util.log.called.should.be.ok
 
-  describe '#stop', ->
-    it 'should exist', -> mod.stop.should.be.ok
-    it 'should be chainable', -> mod.stop().should.be.eql mod
-    it 'should stop the interval', sinon.test ->
-      @stub global, 'clearInterval'
-      mod.stop()
-      global.clearInterval.called.should.be.ok
+    it 'should not pipe to log if there is no delay', sinon.test ->
+      callCount = 0
+      @stub util, 'log'
+      @stub global, 'setTimeout', (cb) -> cb() if ++callCount < 2
+      dateStub = @stub global.Date, 'now'
+      dateStub.onFirstCall().returns 2
+      dateStub.onSecondCall().returns 2
+      mod.start()
+      util.log.called.should.not.be.ok
 
-  #describe 'time tracking', ->
-    #it 'should not pipe if there is no delay', sinon.test ->
-      #@stub util, 'log'
-      #mod.start interval: 400
-      #clock.tick 800
-      #util.log.called.should.not.be.ok
+    it 'should pipe to log if timeout time is in not factor range', sinon.test ->
+      callCount = 0
+      @stub util, 'log'
+      @stub global, 'setTimeout', (cb) -> cb() if ++callCount < 2
+      dateStub = @stub global.Date, 'now'
+      dateStub.onFirstCall().returns 2
+      dateStub.onSecondCall().returns 4
+      mod.start factor: .5, interval: .9
+      util.log.called.should.be.ok
+
+    it 'should not pipe to log if timeout time is in factor range', sinon.test ->
+      callCount = 0
+      @stub util, 'log'
+      @stub global, 'setTimeout', (cb) -> cb() if ++callCount < 2
+      dateStub = @stub global.Date, 'now'
+      dateStub.onFirstCall().returns 2
+      dateStub.onSecondCall().returns 4
+      mod.start factor: .5, interval: 1
+      util.log.called.should.not.be.ok
