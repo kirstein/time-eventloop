@@ -1,7 +1,9 @@
 (function() {
-  var assign, chalk, notify, startInterval, startTime, timeoutId, util;
+  var assign, chalk, notify, range, startInterval, startTime, timeoutId, util;
 
   chalk = require('chalk');
+
+  range = require('data-range');
 
   util = require('util');
 

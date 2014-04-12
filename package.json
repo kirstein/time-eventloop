@@ -8,7 +8,8 @@
     "url": "https://github.com/kirstein/time-eventloop.git"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test",
+    "prepublish": "grunt build"
   },
   "config": {
     "blanket": {
@@ -41,6 +42,7 @@
     "grunt-bump": "0.0.13"
   },
   "dependencies": {
-    "chalk": "^0.4.0"
+    "chalk": "^0.4.0",
+    "data-range": "0.1.0"
   }
 }

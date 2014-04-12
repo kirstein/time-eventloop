@@ -1,4 +1,5 @@
 chalk = require 'chalk'
+range = require 'data-range'
 util  = require 'util'
 
 timeoutId = null
@@ -11,8 +12,10 @@ assign = (defaults, opts = {}) ->
     res[key] = opts[key] or val
   res
 
-notify = (time) ->
-  util.log chalk.yellow "event loop delayed by: #{time} ms"
+notify = (delay) ->
+  delayClr = range.getNext(delay) or range.getLargest()
+  delayMsg = delayClr delay
+  util.log chalk.yellow "event loop delayed by: #{delayMsg} #{chalk.yellow 'ms'}"
 
 startInterval = ({ interval, factor }) ->
   startTime = Date.now()
@@ -24,11 +27,14 @@ startInterval = ({ interval, factor }) ->
 
 exports.start = (rawOpts) =>
   @stop()
-  startInterval assign @defaults, rawOpts
+  opts = assign @defaults, rawOpts
+  range.set opts.color
+  startInterval opts
   @
 
 exports.stop = =>
   clearInterval timeoutId
+  range.clear()
   @
 
 exports.defaults =
@@ -36,3 +42,10 @@ exports.defaults =
   factor   : .4
   # Interval of the setTimeout. Will be used to determine the diff between real running times
   interval : 4
+  # Warning colors according to delayed MS
+  color:
+    0   : chalk.green
+    10  : chalk.yellow
+    50  : chalk.cyan
+    100 : chalk.red
+

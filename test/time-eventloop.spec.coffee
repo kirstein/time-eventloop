@@ -1,6 +1,7 @@
 mod   = require "#{process.cwd()}/src/time-eventloop"
 util  = require 'util'
 sinon = require 'sinon'
+range = require 'data-range'
 
 describe 'time-eventloop', ->
   it 'should exist', -> mod.should.be.ok
@@ -22,6 +23,11 @@ describe 'time-eventloop', ->
         @stub global, 'setTimeout'
         mod.start().should.be.eql mod
 
+      it 'should set the range with colors', sinon.test ->
+        @stub range, 'set'
+        mod.start()
+        range.set.called.should.be.ok
+
       it 'should start interval', sinon.test ->
         @stub global, 'setTimeout'
         mod.start()
@@ -39,6 +45,11 @@ describe 'time-eventloop', ->
         @stub global, 'clearInterval'
         mod.stop()
         global.clearInterval.called.should.be.ok
+
+      it 'should clear the range', sinon.test ->
+        @stub range, 'clear'
+        mod.stop()
+        range.clear.called.should.be.ok
 
   describe 'time tracking', ->
     it 'should pipe to log if there is delay', sinon.test ->
