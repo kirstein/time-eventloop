@@ -1,6 +1,6 @@
 {
   "name": "time-eventloop",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "notify when eventloop ticks are getting delayed",
   "homepage": "https://github.com/kirstein/time-eventloop",
   "repository": {
@@ -37,7 +37,8 @@
     "grunt-contrib-watch": "^0.6.1",
     "coffee-script": "~1.7.1",
     "grunt-contrib-clean": "^0.5.0",
-    "sinon": "^1.9.1"
+    "sinon": "^1.9.1",
+    "grunt-bump": "0.0.13"
   },
   "dependencies": {
     "chalk": "^0.4.0"
