@@ -1,6 +1,6 @@
 {
   "name": "time-eventloop",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "notify when eventloop ticks are getting delayed",
   "homepage": "https://github.com/kirstein/time-eventloop",
   "repository": {
