@@ -42,9 +42,9 @@ describe 'time-eventloop', ->
       it 'should exist', -> mod.stop.should.be.ok
       it 'should be chainable', -> mod.stop().should.be.eql mod
       it 'should stop the interval', sinon.test ->
-        @stub global, 'clearInterval'
+        @stub global, 'clearTimeout'
         mod.stop()
-        global.clearInterval.called.should.be.ok
+        global.clearTimeout.called.should.be.ok
 
       it 'should clear the range', sinon.test ->
         @stub range, 'clear'

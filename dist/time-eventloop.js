@@ -58,7 +58,7 @@
 
   exports.stop = (function(_this) {
     return function() {
-      clearInterval(timeoutId);
+      clearTimeout(timeoutId);
       range.clear();
       return _this;
     };
