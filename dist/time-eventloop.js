@@ -33,7 +33,7 @@
 
   startInterval = function(interval, cb) {
     startTime = Date.now();
-    return timeoutId = setTimeout((function() {
+    return setTimeout((function() {
       cb();
       return startInterval(interval, cb);
     }), interval);
@@ -45,7 +45,7 @@
       _this.stop();
       _ref = assign(_this.defaults, rawOpts), color = _ref.color, interval = _ref.interval, factor = _ref.factor;
       range.set(color);
-      startInterval(interval, function() {
+      timeoutId = startInterval(interval, function() {
         var delta;
         delta = Date.now() - startTime;
         if (delta * factor > interval) {

@@ -23,7 +23,7 @@ notify = (delay) ->
 # it will wait for it to clear
 startInterval = (interval, cb) ->
   startTime = Date.now()
-  timeoutId = setTimeout (->
+  setTimeout (->
     cb()
     startInterval interval, cb
   ), interval
@@ -33,7 +33,7 @@ exports.start = (rawOpts) =>
   { color, interval, factor } = assign @defaults, rawOpts
   range.set color
   # Start watching the eventloop ticks
-  startInterval interval, ->
+  timeoutId = startInterval interval, ->
     delta = Date.now() - startTime
     notify delta if delta * factor > interval
   this
