@@ -58,6 +58,7 @@ module.exports = (grunt) ->
       options:
         files: [ 'package.json' ]
         commit: false
+        push: false
 
     # Deal with coffeescript concatenation and compiling
     coffee:
