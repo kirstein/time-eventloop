@@ -17,25 +17,31 @@ notify = (delay) ->
   delayMsg = delayClr delay
   util.log chalk.yellow "event loop delayed by: #{delayMsg} #{chalk.yellow 'ms'}"
 
-startInterval = ({ interval, factor }) ->
+# Using setTimeout instead of setInterval
+# setTimeout gives more precise evaluation of time
+# due the fact that if eventloop is blocked at the end of the interval
+# it will wait for it to clear
+startInterval = (interval, cb) ->
   startTime = Date.now()
   timeoutId = setTimeout (->
-    delta = Date.now() - startTime
-    notify delta if delta * factor > interval
-    startInterval { interval, factor }
+    cb()
+    startInterval interval, cb
   ), interval
 
 exports.start = (rawOpts) =>
   @stop()
-  opts = assign @defaults, rawOpts
-  range.set opts.color
-  startInterval opts
-  @
+  { color, interval, factor } = assign @defaults, rawOpts
+  range.set color
+  # Start watching the eventloop ticks
+  startInterval interval, ->
+    delta = Date.now() - startTime
+    notify delta if delta * factor > interval
+  this
 
 exports.stop = =>
   clearInterval timeoutId
   range.clear()
-  @
+  this
 
 exports.defaults =
   # Constant used to determinate better range between the real timeout delta and interval
