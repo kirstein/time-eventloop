@@ -39,7 +39,7 @@ exports.start = (rawOpts) =>
   this
 
 exports.stop = =>
-  clearInterval timeoutId
+  clearTimeout timeoutId
   range.clear()
   this
 
